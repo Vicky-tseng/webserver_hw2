@@ -11,7 +11,7 @@
 #include<sys/time.h>
 
 int list[10]={0};
-int matrix[9]={0};
+int matrix[10]={0};
 
 //int an=0;
 int main(){
@@ -19,7 +19,7 @@ int main(){
 	
 	char input[1]={},input2[1]={};
 	int ps=0,start=0;
-	char message[256]={'\0'},msg[100];
+	char message[256]={'\0'},msg[100],message2[256]={"win\n"},msg3[256]={"equal\n"};
 	int sockfd=0;
 	int client=0;
 	struct sockaddr_in info,clientinfo;
@@ -28,7 +28,7 @@ int main(){
 	long ret;
 	int listener,to=0;
 	pid_t pid;
-	int i,num2=10,num,num3=10,num_list=0;
+	int i,num2=10,num,num3=10,num_list=0,num4=0;
 	int fd[2],fd2[2];
 	FILE *fp=NULL,*fp2=NULL,*fp3=NULL;
 
@@ -104,6 +104,8 @@ int main(){
 				while(1){
 			//printf("%d",pid);
 			
+//				recv(client,input,sizeof(input),0);
+				
 				recv(client,input,sizeof(input),0);
 				memset(message,'\0',sizeof(message));
 //				fp2=fopen("matrix.txt","r");
@@ -118,6 +120,30 @@ int main(){
 				sleep(3);
 //				close(fd[0]);
 				matrix[num]=1;
+				if(matrix[1]==1&&matrix[2]==1&&matrix[3]==1)
+					send(client,message2,sizeof(message2),0);
+				if(matrix[4]==1&&matrix[5]==1&&matrix[6]==1)
+                                        send(client,message2,sizeof(message2),0);
+				if(matrix[7]==1&&matrix[8]==1&&matrix[9]==1)
+                                        send(client,message2,sizeof(message2),0);			
+				if(matrix[1]==1&&matrix[5]==1&&matrix[9]==1)
+                                        send(client,message2,sizeof(message2),0);
+				if(matrix[7]==1&&matrix[5]==1&&matrix[3]==1)
+                                        send(client,message2,sizeof(message2),0);
+				if(matrix[1]==1&&matrix[4]==1&&matrix[7]==1)
+                                        send(client,message2,sizeof(message2),0);
+				if(matrix[2]==1&&matrix[5]==1&&matrix[8]==1)
+                                        send(client,message2,sizeof(message2),0);
+				if(matrix[3]==1&&matrix[6]==1&&matrix[9]==1)
+                                        send(client,message2,sizeof(message2),0);				
+				for(i=1;i<=9;i++){
+					if(matrix[i]==0)
+						num4=1;
+				}
+				if(num4==0)
+					send(client,msg3,sizeof(msg3),0);
+				num4=0;
+//				matrix[num]=1;
 //				for(i=0;i<8;i++)
 //				printf("%d",matrix[i]);
 //				printf("\n");
@@ -144,7 +170,7 @@ int main(){
 					num2=10;
 					num3=10;
                 		}
-				printf("yes");
+//				printf("yes");
 				printf("%s",message);
 				write(fd[1],matrix,sizeof(matrix));
 				send(client,message,sizeof(message),0);
@@ -174,7 +200,7 @@ int main(){
 		}
 		if(start==2){
 //			sleep(5);
-			printf("yes2");
+//			printf("yes2");
 			pipe(fd2);
 			pid=fork();
 			if(pid==0){
@@ -193,6 +219,22 @@ int main(){
                                 sleep(5);
 //                              close(fd[0]);
                                 matrix[num]=2;
+				if(matrix[1]==1&&matrix[2]==1&&matrix[3]==1)
+                                        send(client,message2,sizeof(message2),0);
+                                if(matrix[4]==2&&matrix[5]==2&&matrix[6]==2)
+                                        send(client,message2,sizeof(message2),0);                               
+                                if(matrix[7]==2&&matrix[8]==2&&matrix[9]==2)
+                                        send(client,message2,sizeof(message2),0);
+                                if(matrix[1]==2&&matrix[5]==2&&matrix[9]==2)
+                                        send(client,message2,sizeof(message2),0);
+                                if(matrix[7]==2&&matrix[5]==2&&matrix[3]==2)
+                                        send(client,message2,sizeof(message2),0);
+                                if(matrix[1]==2&&matrix[4]==2&&matrix[7]==2)
+                                        send(client,message2,sizeof(message2),0);                               
+                                if(matrix[2]==2&&matrix[5]==2&&matrix[8]==2)
+                                        send(client,message2,sizeof(message2),0);
+                                if(matrix[3]==2&&matrix[6]==2&&matrix[9]==2)
+					send(client,message2,sizeof(message2),0);
 				strcpy(message,"\t|\t|\t\n------\n\t|\t|\t\n-----\n\t|\t|\t\n");
                                 for(i=0;i<=8;i++){
                                         if(matrix[i]==1)
@@ -214,9 +256,10 @@ int main(){
 					num2=10;
 					num3=10;
                                 }
-                                printf("yes");
+ //                               printf("yes");
                                 printf("%s",message);
                                 write(fd2[1],matrix,sizeof(matrix));
+//				sleep(3);
                                 send(client,message,sizeof(message),0);
 				}
 			}
@@ -226,6 +269,7 @@ int main(){
 //                              close(fd[0]);
 				write(fd[1],matrix,sizeof(matrix));
 				read(fd[0],matrix,sizeof(matrix));
+//				sleep(8);
                                 write(fd2[1],matrix,sizeof(matrix));
 //                              close(fd[1]);
                                 read(fd2[0],matrix,sizeof(matrix));
